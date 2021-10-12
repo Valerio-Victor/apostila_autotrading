@@ -1,14 +1,14 @@
 ---
-title: 'Apostila de Automatização de Trading com R'
-author: 'Victor Valerio'
-date: "`r Sys.Date()`"
+title: 'AUTOMATIZAÇÃO DE TRADING COM R'
+author: 'Organizador: Victor Valerio'
+date: "Última Atualização: `r format.Date(Sys.Date(), '%d-%m-%Y')`"
 output:
-  rmdformats::material:
-    highlight: kate
+  rmdformats::robobook:
+    self_contained: true
 ---
 
-
 ```{r setup, include=FALSE}
+
 library(knitr)
 library(rmdformats)
 
@@ -22,12 +22,182 @@ opts_chunk$set(echo=FALSE,
                message=FALSE,
                warning=FALSE)
 opts_knit$set(width=75)
+
+```
+
+```{css}
+
+.book .book-body .page-inner section.normal h1.title {
+    font-size: 0.1em;
+    margin-top: 0;
+    color: #2f3136;
+}
+
+.book .book-body {
+    color: #000;
+    background: #2f3136;
+}
+
+.book .book-body .page-inner section {
+    background: #2f3136;
+}
+
+.book .book-summary li.title {
+    font-weight: bold;
+    color: #fff;
+    background: #000;
+}
+
+.book .book-summary {
+    font-weight: bold;
+    color: #fff;
+    background: #000;
+    border-right: 1px solid rgba(255, 255, 255);
+}
+
+.book .book-summary ul li a:hover, .book .book-summary ul li.active>a {
+    color: #34e795;
+    background: #2f3136;
+}
+
+.book .book-summary ul li a, .book .book-summary ul li span {
+    color: #fff;
+    background: #000;
+    font-weight: bold;
+}
+
+.glyphicon-menu-hamburger:before {
+    content: "\e236";
+    color: #fff;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    color: #34e795;
+}
+
+.book .book-body .page-inner section.normal {
+    color: #fff;
+}
+
+.book .book-body .page-inner section.normal a {
+    color: #34e795;
+    font-weight: bold;
+}
+
+div.sourceCode {
+    background-color: #2f3136;
+}
+
+.book .book-body .page-inner section.normal pre.sourceCode {
+    background: #000;
+    font-size: 1.6rem;
+}
+
+code span.co {
+    color: #34e795;
+    font-weight: bold;
+    font-size: 1.6rem;
+}
+
+code span.fu {
+    color: #fff;
+    font-size: 1.6rem;
+}
+
+code span.st {
+    color: #70c9e7;
+    font-size: 1.6rem;
+}
+
+code span#cb1-2 {
+    color: #ffb5d3;
+    font-size: 1.6rem;
+}
+
+```
+
+```{r}
+
+knitr::include_graphics('../images/capa.png')
+
+```
+
+# SOBRE A APOSTILA
+
+# IMPORTAÇÃO DE DADOS
+
+Um dos principais pacotes de importação de dados é o [quantmod](https://www.quantmod.com/) 
+(Quantitative Financial Modelling Framework)
+
+```{r, eval=FALSE, echo=TRUE}
+
+# Código para Instalação do Pacote Quantmod:
+install.packages('quantmod')
+
 ```
 
 
 
 
 
-# Pacote Quantmod
 
-# Pacote Quanstrat
+
+
+
+
+
+Possui três funções principais:
+
+baixar dados,
+gráficos, e
+indicador técnico.
+Então, podemos realizar um teste simples em estratégias de negociação. Aprenderemos como testar estratégias mais complicadas.
+
+Antes de começarmos, vamos usar o seguinte código: instalar e carregar quantmod .
+
+library(quantmod)
+
+library(quantmod)
+Objetivos de aprendizado:
+
+Use o pacote quantmod para baixar os preços das ações
+
+criar gráfico de preços de ações e adicionar indicadores técnicos
+
+construir um indicador de negociação simples e aplicá-lo na negociação
+
+avaliar o desempenho de uma regra de negociação com base em dados de retorno
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
