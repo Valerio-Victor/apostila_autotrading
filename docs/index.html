@@ -188,7 +188,7 @@
         <nav role="navigation" id="toc">
           <ul>
           <li><a href="#sobre-a-apostila">SOBRE A APOSTILA</a></li>
-          <li><a href="#importação-de-dados">IMPORTAÇÃO DE DADOS</a></li>
+          <li><a href="#primeira-regra-de-negociação">PRIMEIRA REGRA DE NEGOCIAÇÃO</a></li>
           </ul>
         </nav>
         <ul class="authors">
@@ -314,20 +314,31 @@ code span#cb1-2 {
 <li><p><strong>Juliano Silva</strong>.</p></li>
 </ul>
 </div>
-<div id="importação-de-dados" class="section level1">
-<h1>IMPORTAÇÃO DE DADOS</h1>
-<p>Um dos principais pacotes de importação de dados é o <a href="https://www.quantmod.com/">quantmod</a> (Quantitative Financial Modelling Framework)</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Código para Instalação do Pacote Quantmod:</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">&#39;quantmod&#39;</span>)</span></code></pre></div>
-<p>Possui três funções principais:</p>
-<p>baixar dados, gráficos, e indicador técnico. Então, podemos realizar um teste simples em estratégias de negociação. Aprenderemos como testar estratégias mais complicadas.</p>
-<p>Antes de começarmos, vamos usar o seguinte código: instalar e carregar quantmod .</p>
-<p>library(quantmod)</p>
-<p>library(quantmod) Objetivos de aprendizado:</p>
-<p>Use o pacote quantmod para baixar os preços das ações</p>
-<p>criar gráfico de preços de ações e adicionar indicadores técnicos</p>
-<p>construir um indicador de negociação simples e aplicá-lo na negociação</p>
-<p>avaliar o desempenho de uma regra de negociação com base em dados de retorno</p>
+<div id="primeira-regra-de-negociação" class="section level1">
+<h1>PRIMEIRA REGRA DE NEGOCIAÇÃO</h1>
+<p>Como primeiro passo utilizaremos o “filtro simples” como primeira regra de negociação, uma abordagem extremamente trivial e, portanto, pouco usual. A expectativa com esta aplicação é que se compreenda a lógica de formalização de uma regra de negociação a partir de um exemplo acessível, sem qualquer compromisso com o desempenho.</p>
+<p>Neste caso, a regra “filtro simples” será pautada na comparação dos preços de fechamento em cada um dos dias, de modo que, caso o o preço de fechamento Conforme apresentado a seguir: <strong>(corrigir a explicação depois da programação)</strong></p>
+<p><span class="math display">\[Comprar: \frac{P_t}{P_{t-1}} &gt; 1+\beta\]</span> Em que <span class="math inline">\(P_t\)</span> corresponde ao preço de fechamento no período <span class="math inline">\(t\)</span>, <span class="math inline">\(P_{t-1}\)</span> corresponde ao preço de fechamento no período <span class="math inline">\(t-1\)</span>, isto é, imediatamente anterior e <span class="math inline">\(\beta\)</span> corresponde ao sinal, ou seja, um escalar positivo <span class="math inline">\(\beta&gt;0\)</span> e arbitrariamente definiremos na regra de negociação.</p>
+<p>Vamos iniciar a regra de negociação a partir das etapas do ciclo da ciência de dados. Assim, em primeiro lugar implementaremos a fase de importação dos dados que, neste exemplo, consistirá no uso do IBOVESPA com o ticker <em>^BVSP</em>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Parâmetros para importação dos dados:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>inicio <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">&#39;2021-01-01&#39;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fim <span class="ot">&lt;-</span> <span class="fu">Sys.Date</span>()</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>ticker <span class="ot">&lt;-</span> <span class="st">&#39;^BVSP&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Importação dos dados com quantmod (yahoo finanças):</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>bvsp_ts <span class="ot">&lt;-</span> quantmod<span class="sc">::</span><span class="fu">getSymbols</span>(<span class="at">Symbols =</span> ticker,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                                <span class="at">start =</span> inicio,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">end =</span> fim,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                                <span class="at">auto.assign =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Impressão no console das primeiras 3 linhas:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bvsp_ts, <span class="at">n =</span> <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>           BVSP.Open BVSP.High BVSP.Low BVSP.Close BVSP.Volume BVSP.Adjusted
+2007-01-02     44476     45388    44476      45383    75560200         45383
+2007-01-03     45379     45379    44284      44445   122372800         44445
+2007-01-04     44442     44442    43623      44020    86577000         44020</code></pre>
 </div>
 
    

@@ -131,15 +131,46 @@ Organizadores:
 - **Juliano Silva**.
 
 
-# IMPORTAÇÃO DE DADOS
+# PRIMEIRA REGRA DE NEGOCIAÇÃO
 
-Um dos principais pacotes de importação de dados é o [quantmod](https://www.quantmod.com/) 
-(Quantitative Financial Modelling Framework)
 
-```{r, eval=FALSE, echo=TRUE}
+Como primeiro passo utilizaremos o "filtro simples" como primeira regra de 
+negociação, uma abordagem extremamente trivial e, portanto, pouco usual. A 
+expectativa com esta aplicação é que se compreenda a lógica de formalização de 
+uma regra de negociação a partir de um exemplo acessível, sem qualquer 
+compromisso com o desempenho.
 
-# Código para Instalação do Pacote Quantmod:
-install.packages('quantmod')
+Neste caso, a regra “filtro simples” será pautada na comparação dos preços de 
+fechamento em cada um dos dias, de modo que, caso o o preço de fechamento 
+Conforme apresentado a seguir: **(corrigir a explicação depois da programação)**
+
+$$Comprar: \frac{P_t}{P_{t-1}} > 1+\beta$$
+Em que $P_t$ corresponde ao preço de fechamento no período $t$, $P_{t-1}$ 
+corresponde ao preço de fechamento no período $t-1$, isto é, imediatamente 
+anterior e $\beta$ corresponde ao sinal, ou seja, um escalar positivo $\beta>0$ 
+e arbitrariamente definiremos na regra de negociação.
+
+Vamos iniciar a regra de negociação a partir das etapas do ciclo da ciência de 
+dados. Assim, em primeiro lugar implementaremos a fase de importação dos dados 
+que, neste exemplo, consistirá no uso do IBOVESPA com o ticker _^BVSP_. 
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Parâmetros para importação dos dados:
+
+inicio <- as.Date('2021-01-01')
+fim <- Sys.Date()
+ticker <- '^BVSP'
+
+# Importação dos dados com quantmod (yahoo finanças):
+
+bvsp_ts <- quantmod::getSymbols(Symbols = ticker,
+                                start = inicio,
+                                end = fim,
+                                auto.assign = FALSE)
+
+# Impressão no console das primeiras 3 linhas:
+head(bvsp_ts, n = 3)
 
 ```
 
@@ -153,27 +184,7 @@ install.packages('quantmod')
 
 
 
-Possui três funções principais:
 
-baixar dados,
-gráficos, e
-indicador técnico.
-Então, podemos realizar um teste simples em estratégias de negociação. Aprenderemos como testar estratégias mais complicadas.
-
-Antes de começarmos, vamos usar o seguinte código: instalar e carregar quantmod .
-
-library(quantmod)
-
-library(quantmod)
-Objetivos de aprendizado:
-
-Use o pacote quantmod para baixar os preços das ações
-
-criar gráfico de preços de ações e adicionar indicadores técnicos
-
-construir um indicador de negociação simples e aplicá-lo na negociação
-
-avaliar o desempenho de uma regra de negociação com base em dados de retorno
 
 
 
