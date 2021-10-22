@@ -1,6 +1,6 @@
 ---
 title: 'AUTOMATIZAÇÃO DE TRADING COM R'
-author: 'Organizador: Victor Valerio'
+author: 'Desenvolvedor: Victor Valerio'
 date: "Última Atualização: `r format.Date(Sys.Date(), '%d-%m-%Y')`"
 output:
   rmdformats::robobook:
@@ -123,6 +123,13 @@ knitr::include_graphics('../images/capa.png')
 ```
 
 # SOBRE A APOSTILA
+
+Organizadores:
+
+- **Victor Valerio**;
+
+- **Juliano Silva**.
+
 
 # IMPORTAÇÃO DE DADOS
 
