@@ -11,6 +11,7 @@ output:
 
 library(knitr)
 library(rmdformats)
+library(magrittr, include.only = '%>%')
 
 ## Global options
 options(max.print="75")
@@ -99,6 +100,10 @@ code span.co {
     font-size: 1.6rem;
 }
 
+pre > code.sourceCode > span {
+color: #fff;
+}
+
 code span.fu {
     color: #fff;
     font-size: 1.6rem;
@@ -109,9 +114,55 @@ code span.st {
     font-size: 1.6rem;
 }
 
-code span#cb1-2 {
-    color: #ffb5d3;
+code span.ot {
+    color: #fff;
     font-size: 1.6rem;
+}
+
+code span.sc {
+    color: #fff;
+    font-size: 1.6rem;
+}
+
+code span.cf {
+    color: #e1d44a;
+    font-size: 1.6rem;
+}
+
+code span.ot {
+    color: #af636c;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+code span.dv {
+    color: #70c9e7;
+    font-size: 1.6rem;
+}
+
+code span.at {
+    color: #fff;
+    font-size: 1.6rem;
+}
+
+
+code span.fl {
+    color: #70c9e7;
+    font-size: 1.6rem;
+}
+
+code span.cn {
+    color: #70c9e7;
+    font-size: 1.6rem;
+}
+
+.book .book-body .page-inner section.normal pre {
+    background: #000;
+    border: 1px solid #e1e1e8;
+}
+
+.book .book-body .page-inner section.normal code {
+    color: #34e795;
 }
 
 ```
@@ -158,22 +209,150 @@ que, neste exemplo, consistirá no uso do IBOVESPA com o ticker _^BVSP_.
 
 # Parâmetros para importação dos dados:
 
-inicio <- as.Date('2021-01-01')
+inicio <- Sys.Date()-120
 fim <- Sys.Date()
 ticker <- '^BVSP'
 
+
 # Importação dos dados com quantmod (yahoo finanças):
 
-bvsp_ts <- quantmod::getSymbols(Symbols = ticker,
-                                start = inicio,
-                                end = fim,
-                                auto.assign = FALSE)
+ibovespa <- quantmod::getSymbols(Symbols = ticker,
+                                 from = inicio,
+                                 to = fim,
+                                 auto.assign = FALSE)
 
-# Impressão no console das primeiras 3 linhas:
-head(bvsp_ts, n = 3)
+
+# Impressão no console das primeiras 5 linhas:
+
+head(ibovespa, n = 5)
 
 ```
 
+
+fsdfsd
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Seleção do preço de fechamento apenas:
+
+preco_fechamento <- quantmod::Cl(ibovespa)
+
+
+# Cômputo das variações diárias dos preços de fechamento:
+
+variacao_preco <- preco_fechamento/lag(preco_fechamento) - 1
+
+
+# Definição do parâmetro de compra:
+
+beta <- 0.005
+
+
+# Resultados dos sinais a partir das variações e do parâmetro de compra:
+
+sinal <- c(0)
+
+for (i in 2:length(preco_fechamento)){
+
+  if (variacao_preco[i] > beta){
+
+    sinal[i] <- 1
+
+  } else
+
+    sinal[i] <- 0
+}
+
+
+# Adequando as datas dos sinais:
+
+sinal <- xts::reclass(sinal, preco_fechamento)
+
+
+# Impressão no console das primeiras 5 linhas:
+
+head(sinal, n = 5)
+
+
+```
+
+Gerando análise gráfica a partir dos dados importados, com algumas alterações 
+mínimas de layout e adicionando os sinais calculados com base na regra traçada.
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Gerando o gráfico apenas para o mês de outubro:
+
+quantmod::chartSeries(ibovespa,
+                      subset= '2021-10-01::2021-10-24',
+                      theme = quantmod::chartTheme('black',
+                                                   up.col='#70c9e7',
+                                                   dn.col='#af636c'))
+
+
+# Adicionando os sinais de compra:
+
+quantmod::addTA(sinal, col = 'green')
+
+```
+
+A ordem é pautada no resultado do dia imediatamente anterior. Conforme 
+apresentado a seguir:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Deve-se comprar com base no sinal anterior:
+
+ordem <- lag(sinal,1) 
+
+
+# Alterando o nome da coluna:
+
+names(ordem) <- 'filtro'
+
+
+# Impressão no console das primeiras 5 linhas:
+
+head(ordem, n = 5)
+
+```
+
+
+Para manter simples, a avaliação da negociação deverá ser assim definida:
+
+- **Abertura**: compra;
+
+- **Fechamento**: vende;
+
+- **Tamanho da Negociação**: total.
+
+Neste caso, o retorno diário pode ser exposto como: 
+
+$$Retorno \ Diário: \frac{P_{fechamento}-P_{abertura}}{P_{abertura}}$$
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Cálculo do retorno diário obtido nos dias em que a ordem deveria ser
+# executada de acordo com a estratégia traçada:
+
+retorno_diario <- quantmod::dailyReturn(ibovespa) * ordem
+
+
+# Impressão no console das primeiras 5 linhas:
+
+head(retorno_diario, n = 5)
+
+```
+
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
+
+# Avaliando o resutaldo no périodo traçado (retorno acumulado):
+
+PerformanceAnalytics::charts.PerformanceSummary(retorno_diario)
+
+```
 
 
 
